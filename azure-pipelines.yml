@@ -1,0 +1,67 @@
+# PivotOps — Production Deployment Pipeline
+# Manually triggered from master branch.
+# Builds the add-in and deploys to Azure Static Web Apps.
+#
+# Required pipeline variable (set as secret):
+#   AZURE_STATIC_WEB_APPS_API_TOKEN — deployment token from Azure Static Web App resource
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  NODE_VERSION: "18.x"
+  PROD_URL: "https://calm-ground-0ba11ec03.1.azurestaticapps.net"
+
+stages:
+  - stage: Build
+    displayName: "Build"
+    jobs:
+      - job: BuildJob
+        displayName: "Build production bundle"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(NODE_VERSION)
+            displayName: "Install Node.js"
+
+          - script: npm ci
+            displayName: "Install dependencies"
+
+          - script: |
+              sed -i 's|https://localhost:3000|$(PROD_URL)|g' manifest.xml
+            displayName: "Replace localhost URLs with production domain"
+
+          - script: npm run build
+            displayName: "Build production bundle"
+
+          - publish: $(Build.SourcesDirectory)/dist
+            artifact: dist
+            displayName: "Publish build artifact"
+
+  - stage: Deploy
+    displayName: "Deploy"
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    jobs:
+      - deployment: DeployProd
+        displayName: "Deploy to Azure Static Web Apps"
+        environment: production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: dist
+
+                - task: AzureStaticWebApp@0
+                  displayName: "Deploy to Static Web App"
+                  inputs:
+                    workingDirectory: $(Pipeline.Workspace)/dist
+                    app_location: "/"
+                    skip_app_build: true
+                    skip_api_build: true
+                  env:
+                    azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)

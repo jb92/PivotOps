@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Support — PivotOps</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; color: #1e1e2e; background: #f8f9fa; padding: 40px 20px; }
+    .container { max-width: 720px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 48px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    h1 { font-size: 1.8rem; margin-bottom: 8px; }
+    h2 { font-size: 1.2rem; margin-top: 32px; margin-bottom: 12px; color: #313244; }
+    p, li { font-size: 0.95rem; color: #45475a; margin-bottom: 12px; }
+    ul { padding-left: 24px; margin-bottom: 16px; }
+    a { color: #1e66f5; }
+    .subtitle { font-size: 1rem; color: #6c7086; margin-bottom: 32px; }
+    .contact-card { background: #f2f4f7; border-radius: 8px; padding: 20px; margin-top: 16px; }
+    .contact-card p { margin-bottom: 8px; }
+    .faq-item { border-bottom: 1px solid #e6e9ef; padding: 16px 0; }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q { font-weight: 600; color: #1e1e2e; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Support</h1>
+    <p class="subtitle">PivotOps — Azure DevOps Analytics for Excel</p>
+
+    <h2>Contact Us</h2>
+    <div class="contact-card">
+      <p><strong>Email:</strong> <a href="mailto:pivotops92@gmail.com">pivotops92@gmail.com</a></p>
+      <p>We typically respond within 24–48 hours.</p>
+    </div>
+
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <p class="faq-q">How do I get started?</p>
+      <p>After installing the add-in, open Excel and go to the <strong>PivotOps</strong> tab in the ribbon. Click <strong>Dashboard</strong>, then open Settings (⚙) to enter your Azure DevOps Personal Access Token, organization, and project name.</p>
+    </div>
+
+    <div class="faq-item">
+      <p class="faq-q">Where do I get a Personal Access Token (PAT)?</p>
+      <p>In Azure DevOps, go to <strong>User Settings → Personal Access Tokens → New Token</strong>. Grant it the <strong>Work Items: Read &amp; Write</strong> scope. Copy the token and paste it in PivotOps Settings.</p>
+    </div>
+
+    <div class="faq-item">
+      <p class="faq-q">Is my data sent to your servers?</p>
+      <p>No. PivotOps runs entirely in your browser. All API calls go directly from Excel to Azure DevOps. We do not operate any backend server. See our <a href="privacy.html">Privacy Policy</a> for details.</p>
+    </div>
+
+    <div class="faq-item">
+      <p class="faq-q">Why does the Python engine take a moment to load?</p>
+      <p>PivotOps uses Pyodide (Python compiled to WebAssembly) for analytics and charts. The first load downloads ~30 MB from a CDN, which is then cached by your browser. Subsequent loads are much faster.</p>
+    </div>
+
+    <div class="faq-item">
+      <p class="faq-q">Can I use OAuth instead of a PAT?</p>
+      <p>Yes. In Settings, enter your Azure AD App Registration's Client ID and (optionally) Tenant ID. PivotOps will use MSAL to authenticate with automatic token refresh.</p>
+    </div>
+
+    <div class="faq-item">
+      <p class="faq-q">How do I uninstall and clear my data?</p>
+      <p>Remove the add-in from Excel (Insert → My Add-ins → right-click → Remove). This clears all locally stored settings including your PAT. You can also clear browser storage manually via developer tools.</p>
+    </div>
+
+    <div class="faq-item">
+      <p class="faq-q">The add-in shows "Not connected" — what do I do?</p>
+      <p>Open Settings (⚙) and verify your PAT is still valid (they expire). Also confirm your organization and project names are correct (case-sensitive).</p>
+    </div>
+
+    <h2>System Requirements</h2>
+    <ul>
+      <li>Microsoft Excel (Microsoft 365, Office 2021, or Excel on the web)</li>
+      <li>ExcelApi 1.7 or higher</li>
+      <li>An Azure DevOps organization with work items</li>
+      <li>Internet connection (for Azure DevOps API and Pyodide CDN)</li>
+    </ul>
+  </div>
+</body>
+</html>

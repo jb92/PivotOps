@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy — PivotOps</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; color: #1e1e2e; background: #f8f9fa; padding: 40px 20px; }
+    .container { max-width: 720px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 48px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    h1 { font-size: 1.8rem; margin-bottom: 8px; }
+    h2 { font-size: 1.2rem; margin-top: 32px; margin-bottom: 12px; color: #313244; }
+    p, li { font-size: 0.95rem; color: #45475a; margin-bottom: 12px; }
+    ul { padding-left: 24px; margin-bottom: 16px; }
+    .last-updated { font-size: 0.85rem; color: #6c7086; margin-bottom: 32px; }
+    a { color: #1e66f5; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+    th, td { border: 1px solid #e6e9ef; padding: 10px 12px; text-align: left; }
+    th { background: #f2f4f7; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Privacy Policy</h1>
+    <p class="last-updated">Last updated: May 26, 2026</p>
+
+    <p>PivotOps ("we", "us", "our") is an Excel add-in that provides analytics and synchronisation with Azure DevOps. We are committed to protecting your privacy and complying with the General Data Protection Regulation (GDPR/RGPD), the California Consumer Privacy Act (CCPA), and other applicable data protection laws.</p>
+
+    <h2>1. Data Controller</h2>
+    <p>The data controller for this add-in is:</p>
+    <p><strong>PivotOps</strong><br/>
+    Contact: <a href="mailto:pivotops92@gmail.com">pivotops92@gmail.com</a></p>
+
+    <h2>2. What Data We Process</h2>
+    <table>
+      <thead>
+        <tr><th>Data</th><th>Purpose</th><th>Storage Location</th><th>Retention</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Azure DevOps Personal Access Token (PAT)</td>
+          <td>Authenticate API requests to your Azure DevOps organisation</td>
+          <td>Locally in your browser (OfficeRuntime.storage / localStorage)</td>
+          <td>Until you remove it in Settings</td>
+        </tr>
+        <tr>
+          <td>Azure DevOps organisation &amp; project name</td>
+          <td>Route API calls to the correct project</td>
+          <td>Locally in your browser</td>
+          <td>Until you remove it in Settings</td>
+        </tr>
+        <tr>
+          <td>OAuth Client ID &amp; Tenant ID (optional)</td>
+          <td>Authenticate via Microsoft Entra ID instead of PAT</td>
+          <td>Locally in your browser</td>
+          <td>Until you remove it in Settings</td>
+        </tr>
+        <tr>
+          <td>Work item data (titles, states, points, etc.)</td>
+          <td>Display analytics, charts, and sync to Excel</td>
+          <td>In-memory only (current session) and in your Excel workbook</td>
+          <td>Duration of the session; workbook data persists in your file</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. What We Do NOT Collect</h2>
+    <ul>
+      <li>We do <strong>not</strong> operate any server or backend service.</li>
+      <li>We do <strong>not</strong> transmit, store, or process your data on any remote server we own.</li>
+      <li>We do <strong>not</strong> collect telemetry, usage analytics, crash reports, or IP addresses.</li>
+      <li>We do <strong>not</strong> use cookies or tracking technologies.</li>
+      <li>We do <strong>not</strong> sell, share, or transfer your personal data to any third party.</li>
+    </ul>
+
+    <h2>4. How Your Data Flows</h2>
+    <p>All API calls are made <strong>directly from your browser</strong> to Microsoft's Azure DevOps services (dev.azure.com, analytics.dev.azure.com, login.microsoftonline.com). PivotOps acts as a client-side application only — no data passes through our infrastructure.</p>
+    <p>Python analytics (via Pyodide/WebAssembly) run <strong>entirely in your browser</strong>. No data leaves your machine for computation.</p>
+
+    <h2>5. Legal Basis for Processing (GDPR Art. 6)</h2>
+    <p>The legal basis for processing your data is <strong>contractual necessity</strong> (Art. 6(1)(b) GDPR) — the add-in needs your credentials and project configuration to deliver the service.</p>
+
+    <h2>6. Your Rights</h2>
+    <p>Under GDPR/RGPD, you have the following rights:</p>
+    <ul>
+      <li><strong>Right of access</strong> — All your data is stored locally in your browser. You can inspect it via browser developer tools.</li>
+      <li><strong>Right to rectification</strong> — You can update your settings at any time within the add-in.</li>
+      <li><strong>Right to erasure</strong> — You can clear all stored data by removing settings in the add-in, clearing browser storage, or uninstalling the add-in.</li>
+      <li><strong>Right to data portability</strong> — Your data is in your Excel workbook and browser storage, both of which you fully control.</li>
+      <li><strong>Right to object</strong> — Since no data is sent to us, there is no processing to object to beyond your local usage.</li>
+    </ul>
+    <p>To exercise any right or ask questions, contact us at <a href="mailto:pivotops92@gmail.com">pivotops92@gmail.com</a>.</p>
+
+    <h2>7. Third-Party Services</h2>
+    <ul>
+      <li><strong>Microsoft Azure DevOps</strong> — API calls use your own credentials. Microsoft's privacy policy applies to their services: <a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noopener">Microsoft Privacy Statement</a>.</li>
+      <li><strong>Pyodide CDN (cdn.jsdelivr.net)</strong> — Used to load the Python runtime. jsdelivr's privacy policy applies to CDN requests: <a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net" target="_blank" rel="noopener">jsdelivr Privacy Policy</a>.</li>
+    </ul>
+
+    <h2>8. Data Security</h2>
+    <ul>
+      <li>All communications with Azure DevOps use HTTPS/TLS encryption.</li>
+      <li>Credentials are stored in OfficeRuntime.storage (sandboxed, not accessible by other add-ins) with a localStorage fallback.</li>
+      <li>No credentials are ever logged, transmitted to us, or included in error messages.</li>
+    </ul>
+
+    <h2>9. Children's Privacy</h2>
+    <p>PivotOps is not directed at individuals under the age of 16. We do not knowingly collect data from children.</p>
+
+    <h2>10. International Transfers</h2>
+    <p>Since we do not collect or store your data on any server, no international data transfer occurs through our service. Your API calls to Azure DevOps may route through Microsoft's global infrastructure per their policies.</p>
+
+    <h2>11. Changes to This Policy</h2>
+    <p>We may update this privacy policy from time to time. The "Last updated" date at the top will reflect the most recent revision. Continued use of the add-in after changes constitutes acceptance of the updated policy.</p>
+
+    <h2>12. Contact</h2>
+    <p>For any privacy-related questions or requests:</p>
+    <p>Email: <a href="mailto:pivotops92@gmail.com">pivotops92@gmail.com</a></p>
+  </div>
+</body>
+</html>
