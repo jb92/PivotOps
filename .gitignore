@@ -4,3 +4,11 @@ dist/
 .env
 .env.local
 *.private.key
+
+# WinUI desktop shell
+desktop/PivotOps.Desktop/web/
+desktop/PivotOps.Desktop/bin/
+desktop/PivotOps.Desktop/obj/
+desktop/PivotOps.Desktop/AppPackages/
+desktop/PivotOps.Desktop/BundleArtifacts/
+*.pfx

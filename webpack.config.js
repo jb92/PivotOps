@@ -7,17 +7,23 @@ const devCerts = require("office-addin-dev-certs");
 module.exports = async (env, argv) => {
   const mode = argv.mode || "development";
   const isProd = mode === "production";
+  // Desktop build: bundled into the WinUI/WebView2 shell instead of Office.
+  const isDesktop = !!(env && env.desktop);
 
   // Get trusted dev certs for HTTPS (installs to trusted root on first run)
-  const httpsOptions = isProd ? {} : await devCerts.getHttpsServerOptions();
+  const httpsOptions = isProd || isDesktop ? {} : await devCerts.getHttpsServerOptions();
 
   return {
-    entry: {
-      taskpane: "./src/taskpane/taskpane.ts",
-      commands: "./src/commands/commands.ts",
-    },
+    entry: isDesktop
+      ? { taskpane: "./src/desktop/index.ts" }
+      : {
+          taskpane: "./src/taskpane/taskpane.ts",
+          commands: "./src/commands/commands.ts",
+        },
     output: {
-      path: path.resolve(__dirname, "dist"),
+      path: isDesktop
+        ? path.resolve(__dirname, "desktop", "PivotOps.Desktop", "web")
+        : path.resolve(__dirname, "dist"),
       filename: "[name].js",
       clean: true,
     },
@@ -45,20 +51,32 @@ module.exports = async (env, argv) => {
         filename: "taskpane.html",
         template: "./src/taskpane/taskpane.html",
         chunks: ["taskpane"],
+        templateParameters: (compilation, assets, assetTags, options) => ({
+          compilation,
+          webpackConfig: compilation.options,
+          htmlWebpackPlugin: { tags: assetTags, files: assets, options },
+          officeJs: !isDesktop,
+        }),
       }),
-      new HtmlWebpackPlugin({
-        filename: "commands.html",
-        template: "./src/commands/commands.html",
-        chunks: ["commands"],
-      }),
+      ...(isDesktop
+        ? []
+        : [
+            new HtmlWebpackPlugin({
+              filename: "commands.html",
+              template: "./src/commands/commands.html",
+              chunks: ["commands"],
+            }),
+          ]),
       new CopyWebpackPlugin({
-        patterns: [
-          { from: "assets", to: "assets", noErrorOnMissing: true },
-          { from: "manifest.xml", to: "manifest.xml" },
-          { from: "privacy.html", to: "privacy.html" },
-          { from: "support.html", to: "support.html" },
-          { from: "index.html", to: "index.html" },
-        ],
+        patterns: isDesktop
+          ? [{ from: "assets", to: "assets", noErrorOnMissing: true }]
+          : [
+              { from: "assets", to: "assets", noErrorOnMissing: true },
+              { from: "manifest.xml", to: "manifest.xml" },
+              { from: "privacy.html", to: "privacy.html" },
+              { from: "support.html", to: "support.html" },
+              { from: "index.html", to: "index.html" },
+            ],
       }),
       ...(isProd
         ? [new MiniCssExtractPlugin({ filename: "[name].css" })]

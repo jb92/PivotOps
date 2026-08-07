@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="PivotOps.Desktop.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="#1E1E2E">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border x:Name="TitleBar" Grid.Row="0" Height="40" Background="#181825">
+            <TextBlock Text="PivotOps"
+                       Margin="16,0,0,0"
+                       VerticalAlignment="Center"
+                       Foreground="#CDD6F4"
+                       FontWeight="SemiBold" />
+        </Border>
+
+        <Border Grid.Row="1" Background="#181825" BorderBrush="#313244" BorderThickness="0,1,0,1" Padding="8,6">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Button x:Name="OpenInExcelButton" Content="Open workbook" Click="OnOpenWorkbook" />
+                    <Button x:Name="SaveCopyButton" Content="Save a copy…" Click="OnSaveCopy" />
+                    <Button x:Name="RevealButton" Content="Show in folder" Click="OnRevealWorkbook" />
+                </StackPanel>
+
+                <TextBlock x:Name="StatusText"
+                           Grid.Column="1"
+                           Margin="16,0,8,0"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           TextTrimming="CharacterEllipsis"
+                           Foreground="#A6ADC8"
+                           Text="No workbook yet" />
+            </Grid>
+        </Border>
+
+        <controls:WebView2 x:Name="WebView" Grid.Row="2" />
+
+        <TextBlock x:Name="LoadError"
+                   Grid.Row="2"
+                   Margin="24"
+                   Visibility="Collapsed"
+                   TextWrapping="Wrap"
+                   Foreground="#F38BA8" />
+    </Grid>
+</Window>
