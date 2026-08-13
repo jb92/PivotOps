@@ -21,6 +21,7 @@ public sealed partial class MainWindow : Window
         InitializeComponent();
 
         Title = "PivotOps";
+        SetWindowIcon();
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(TitleBar);
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1180, 860));
@@ -32,18 +33,22 @@ public sealed partial class MainWindow : Window
         _ = InitializeWebViewAsync();
     }
 
+    /// <summary>WinUI windows show the generic shell icon until one is set explicitly.</summary>
+    private void SetWindowIcon()
+    {
+        var icon = Path.Combine(AppContext.BaseDirectory, "Assets", "PivotOps.ico");
+        if (File.Exists(icon)) AppWindow.SetIcon(icon);
+    }
+
     private static string GetDataFolder()
     {
-        try
-        {
-            return ApplicationData.Current.LocalFolder.Path;
-        }
-        catch
-        {
-            var fallback = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PivotOps");
-            Directory.CreateDirectory(fallback);
-            return fallback;
-        }
+        var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        var folder = string.IsNullOrEmpty(documents)
+            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PivotOps")
+            : Path.Combine(documents, "PivotOps");
+
+        Directory.CreateDirectory(folder);
+        return folder;
     }
 
     private async Task InitializeWebViewAsync()
@@ -65,7 +70,7 @@ public sealed partial class MainWindow : Window
         var webRoot = Path.Combine(AppContext.BaseDirectory, "web");
         if (!File.Exists(Path.Combine(webRoot, "taskpane.html")))
         {
-            ShowFatal($"The bundled web app was not found at:\n{webRoot}\n\nRun `npm run build:desktop` and rebuild.");
+            ShowFatal("The bundled web app is missing from this installation.\n\nReinstall PivotOps to repair it.");
             return;
         }
 
@@ -163,11 +168,7 @@ public sealed partial class MainWindow : Window
 
     private void OnWorkbookSaved(object? sender, string path)
     {
-        DispatcherQueue.TryEnqueue(() =>
-        {
-            StatusText.Text = path;
-            UpdateWorkbookButtons();
-        });
+        DispatcherQueue.TryEnqueue(UpdateWorkbookButtons);
     }
 
     private void UpdateWorkbookButtons()
@@ -176,7 +177,8 @@ public sealed partial class MainWindow : Window
         OpenInExcelButton.IsEnabled = exists;
         SaveCopyButton.IsEnabled = exists;
         RevealButton.IsEnabled = exists;
-        if (exists) StatusText.Text = _workbook.WorkbookPath;
+        // The storage location is an implementation detail: surface the file, not its path.
+        if (exists) StatusText.Text = Path.GetFileName(_workbook.WorkbookPath);
     }
 
     private async void OnOpenWorkbook(object sender, RoutedEventArgs e)

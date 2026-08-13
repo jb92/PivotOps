@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Start the packaged app with the "desktop: build + register + launch" task, then attach.
+      "name": "Desktop: attach to PivotOps.Desktop",
+      "type": "coreclr",
+      "request": "attach",
+      "processName": "PivotOps.Desktop.exe"
+    },
+    {
+      // Build + register + launch, then attach in one step. Startup code runs before the
+      // debugger is attached; add a Debugger.Launch() call if you need to break in App().
+      "name": "Desktop: launch then attach",
+      "type": "coreclr",
+      "request": "attach",
+      "processName": "PivotOps.Desktop.exe",
+      "preLaunchTask": "desktop: build + register + launch"
+    },
+    {
+      "name": "WebView2 payload (Edge)",
+      "type": "msedge",
+      "request": "attach",
+      "port": 9222,
+      "webRoot": "${workspaceFolder}/desktop/PivotOps.Desktop/web"
+    }
+  ]
+}

@@ -12,6 +12,7 @@ internal sealed class WorkbookHost
     private readonly SemaphoreSlim _gate = new(1, 1);
     private XLWorkbook? _workbook;
     private DateTime _fileStamp;
+    private bool _reloadAfterSave;
 
     public WorkbookHost(string workbookPath)
     {
@@ -33,6 +34,12 @@ internal sealed class WorkbookHost
         {
             var results = await Task.Run(() => Apply(ops)).ConfigureAwait(false);
             return results;
+        }
+        catch
+        {
+            // Never let a half-applied batch leak into the next one.
+            Invalidate();
+            throw;
         }
         finally
         {
@@ -94,7 +101,7 @@ internal sealed class WorkbookHost
                         var table = ResolveTable(deleteSheet, newTables, op);
                         if (table is not null)
                         {
-                            deleteSheet.Tables.Remove(table.Name);
+                            RemoveTable(deleteSheet, table);
                             mutated = true;
                         }
                     }
@@ -103,6 +110,13 @@ internal sealed class WorkbookHost
                 case "tableAdd":
                     if (TryGetSheet(workbook, op, out var addSheet) && TryArea(addSheet, op, out var tableArea))
                     {
+                        // A leftover table over the same cells makes CreateTable throw, so the
+                        // refresh must not depend on the caller having deleted it first.
+                        foreach (var stale in addSheet.Tables.Where(t => t.RangeAddress.Intersects(tableArea.RangeAddress)).ToList())
+                        {
+                            RemoveTable(addSheet, stale);
+                        }
+
                         var created = tableArea.CreateTable();
                         if (op.HasHeaders == false) created.SetShowHeaderRow(false);
                         if (op.Id is not null) newTables[op.Id] = created;
@@ -205,9 +219,38 @@ internal sealed class WorkbookHost
     private void Save(XLWorkbook workbook)
     {
         if (!workbook.Worksheets.Any()) return;
-        workbook.SaveAs(WorkbookPath);
+
+        // Save through a temp file: a failed save must never truncate the last good workbook.
+        var temp = Path.Combine(Path.GetDirectoryName(WorkbookPath)!, "~" + Path.GetFileName(WorkbookPath));
+        try
+        {
+            workbook.SaveAs(temp);
+            File.Move(temp, WorkbookPath, overwrite: true);
+        }
+        finally
+        {
+            if (File.Exists(temp)) File.Delete(temp);
+        }
+
         _fileStamp = File.GetLastWriteTimeUtc(WorkbookPath);
         Saved?.Invoke(this, WorkbookPath);
+
+        // ClosedXML keeps the package relationship of a removed table around, which makes the
+        // next save fail; reloading the file just written gives the next batch a clean workbook.
+        if (_reloadAfterSave) Invalidate();
+    }
+
+    private void RemoveTable(IXLWorksheet sheet, IXLTable table)
+    {
+        sheet.Tables.Remove(table.Name);
+        _reloadAfterSave = true;
+    }
+
+    private void Invalidate()
+    {
+        _workbook?.Dispose();
+        _workbook = null;
+        _reloadAfterSave = false;
     }
 
     private static bool TryGetSheet(XLWorkbook workbook, ExcelOp op, out IXLWorksheet sheet)

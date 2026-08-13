@@ -1,0 +1,63 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "web: build payload",
+      "type": "shell",
+      "command": "npm run build:desktop",
+      "problemMatcher": "$tsc",
+      "group": "build"
+    },
+    {
+      "label": "desktop: build",
+      "type": "shell",
+      "command": "dotnet build desktop/PivotOps.Desktop/PivotOps.Desktop.csproj -c Debug -r win-x64 -p:Platform=x64",
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "desktop: build + register + launch",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/run-desktop.ps1",
+        "-Configuration",
+        "Debug",
+        "-Architecture",
+        "x64"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "desktop: register + launch (no build)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/run-desktop.ps1",
+        "-SkipBuild"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "test: jest",
+      "type": "shell",
+      "command": "npm test",
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    }
+  ]
+}
