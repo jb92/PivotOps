@@ -10,13 +10,13 @@
     for the reserved app name before submitting to the Microsoft Store.
   -->
   <Identity
-    Name="PivotOps.PivotOps"
-    Publisher="CN=PivotOps"
+    Name="4237Jean-BaptisteLchelon.PivotOps"
+    Publisher="CN=2CD3354F-B47E-4ACA-863D-DE97359E495C"
     Version="1.0.0.0" />
 
   <Properties>
     <DisplayName>PivotOps</DisplayName>
-    <PublisherDisplayName>PivotOps</PublisherDisplayName>
+    <PublisherDisplayName>jb92</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
